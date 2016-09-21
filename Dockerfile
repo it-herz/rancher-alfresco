@@ -4,7 +4,7 @@ FROM quay.io/webcenter/rancher-base-image:latest
 MAINTAINER Sebastien LANGOUREAUX (linuxworkgroup@hotmail.com)
 
 #Alfresco version
-ENV ALF_URL=http://downloads.sourceforge.net/project/alfresco/Alfresco%20201609-EA%20Community/alfresco-community-installer-201609-EA-linux-x64.bin?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Falfresco%2Ffiles%2FAlfresco%2520201609-EA%2520Community%2F&ts=1474473568&use_mirror=heanet
+ENV ALF_URL=http://heanet.dl.sourceforge.net/project/alfresco/Alfresco%20201609-EA%20Community/alfresco-community-installer-201609-EA-linux-x64.bin
 ENV ALF_HOME=/opt/alfresco
 
 
