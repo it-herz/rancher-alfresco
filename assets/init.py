@@ -45,8 +45,8 @@ class ServiceRun():
 
       db_conn_params = ""
       if db_type == "mysql":
-          db_conn_params = "?useSSL=false"
-          db_driver = "org.gjt.mm.mysql.Driver"
+          db_conn_params = "?useSSL=false&useUnicode=true&characterEncoding=utf8"
+          db_driver = "com.mysql.jdbc.Driver"
       else:
           db_driver = "org.postgresql.Driver"
 
@@ -137,7 +137,7 @@ class ServiceRun():
       if user is not None and user != "":
           if password is None or password == "":
               raise KeyError("You must provide password")
-          self.replace_all(ALFRESCO_PATH + '/tomcat/shared/classes/alfresco-global.properties', '^#.mail.username\s*=.*', 'mail.username=' + username)
+          self.replace_all(ALFRESCO_PATH + '/tomcat/shared/classes/alfresco-global.properties', '^#.mail.username\s*=.*', 'mail.username=' + user)
           self.replace_all(ALFRESCO_PATH + '/tomcat/shared/classes/alfresco-global.properties', '^#.mail.password\s*=.*', 'mail.password=' + password)
 
           if protocol == "smtp":
@@ -185,7 +185,7 @@ class ServiceRun():
           self.replace_all(ALFRESCO_PATH + '/tomcat/shared/classes/alfresco-global.properties', '^#.cifs.broadcast\s*=', '#cifs.broadcast=')
           self.replace_all(ALFRESCO_PATH + '/tomcat/shared/classes/alfresco-global.properties', '^#.cifs.ipv6.enabled\s*=', '#cifs.ipv6.enabled=')
 
-  def set_ldap(self, enable, auth_format, host, user, password, list_admins, search_base_group, search_base_user):
+  def set_ldap(self, enable, auth_format, host, user, password, list_admins, search_base_group, search_base_user, group_query, group_differential_query, person_query, person_differential_query):
       global ALFRESCO_PATH
 
       if enable == "true":
@@ -210,6 +210,10 @@ class ServiceRun():
           self.replace_all(ALFRESCO_PATH + '/tomcat/shared/classes/alfresco/extension/subsystems/Authentication/ldap/ldap1/ldap-authentication.properties', 'ldap.authentication.defaultAdministratorUserNames\s*=.*', 'ldap.authentication.defaultAdministratorUserNames=' + list_admins)
           self.replace_all(ALFRESCO_PATH + '/tomcat/shared/classes/alfresco/extension/subsystems/Authentication/ldap/ldap1/ldap-authentication.properties', 'ldap.synchronization.java.naming.security.principal\s*=.*', 'ldap.synchronization.java.naming.security.principal=' + user)
           self.replace_all(ALFRESCO_PATH + '/tomcat/shared/classes/alfresco/extension/subsystems/Authentication/ldap/ldap1/ldap-authentication.properties', 'ldap.synchronization.java.naming.security.credentials\s*=.*', 'ldap.synchronization.java.naming.security.credentials=' + password)
+          self.replace_all(ALFRESCO_PATH + '/tomcat/shared/classes/alfresco/extension/subsystems/Authentication/ldap/ldap1/ldap-authentication.properties', 'ldap.synchronization.groupQuery\s*=.*', 'ldap.synchronization.groupQuery=' + group_query)
+          self.replace_all(ALFRESCO_PATH + '/tomcat/shared/classes/alfresco/extension/subsystems/Authentication/ldap/ldap1/ldap-authentication.properties', 'ldap.synchronization.groupDifferentialQuery\s*=.*', 'ldap.synchronization.groupDifferentialQuery=' + group_differential_query)
+          self.replace_all(ALFRESCO_PATH + '/tomcat/shared/classes/alfresco/extension/subsystems/Authentication/ldap/ldap1/ldap-authentication.properties', 'ldap.synchronization.personQuery\s*=.*', 'ldap.synchronization.personQuery=' + person_query)
+          self.replace_all(ALFRESCO_PATH + '/tomcat/shared/classes/alfresco/extension/subsystems/Authentication/ldap/ldap1/ldap-authentication.properties', 'ldap.synchronization.personDifferentialQuery\s*=.*', 'ldap.synchronization.personDifferentialQuery=' + person_differential_query)
           self.replace_all(ALFRESCO_PATH + '/tomcat/shared/classes/alfresco/extension/subsystems/Authentication/ldap/ldap1/ldap-authentication.properties', 'ldap.synchronization.groupSearchBase\s*=.*', 'ldap.synchronization.groupSearchBase=' + search_base_group)
           self.replace_all(ALFRESCO_PATH + '/tomcat/shared/classes/alfresco/extension/subsystems/Authentication/ldap/ldap1/ldap-authentication.properties', 'ldap.synchronization.userSearchBase\s*=.*', 'ldap.synchronization.userSearchBase=' + search_base_user)
       else:
@@ -507,7 +511,7 @@ if __name__ == '__main__':
     serviceRun.set_cifs(os.getenv('CIFS_ENABLED', 'true'), os.getenv('CIFS_SERVER_NAME', 'localhost'), os.getenv('CIFS_DOMAIN', 'WORKGROUP'))
 
     # We set LDAP
-    serviceRun.set_ldap(os.getenv('LDAP_ENABLED', 'false'), os.getenv('LDAP_AUTH_FORMAT'), os.getenv('LDAP_HOST'), os.getenv('LDAP_USER'), os.getenv('LDAP_PASSWORD'), os.getenv('LDAP_ADMINS'), os.getenv('LDAP_GROUP_SEARCHBASE'), os.getenv('LDAP_USER_SEARCHBASE'))
+    serviceRun.set_ldap(os.getenv('LDAP_ENABLED', 'false'), os.getenv('LDAP_AUTH_FORMAT'), os.getenv('LDAP_HOST'), os.getenv('LDAP_USER'), os.getenv('LDAP_PASSWORD'), os.getenv('LDAP_ADMINS'), os.getenv('LDAP_GROUP_SEARCHBASE'), os.getenv('LDAP_USER_SEARCHBASE'), os.getenv('LDAP_GROUP_QUERY','(objectClass\=posixGroup)'), os.getenv('LDAP_DIFFERENTIAL_GROUP_QUERY','(&(objectClass\=posixGroup)(!(modifyTimeStamp\<\={0})))'),os.getenv('LDAP_PERSON_QUERY','(objectClass\=inetOrgPerson)'), os.getenv('LDAP_DIFFERENTIAL_PERSON_QUERY','(&(objectClass\=inetOrgPerson)(!(modifyTimeStamp\<\={0})))'))
 
     # Reverse Proxy
     if os.getenv('REVERSE_PROXY_URL') is not None:
