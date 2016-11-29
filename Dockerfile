@@ -4,9 +4,8 @@ FROM quay.io/webcenter/rancher-base-image:latest
 MAINTAINER Sebastien LANGOUREAUX (linuxworkgroup@hotmail.com)
 
 #Alfresco version
-ENV ALF_URL=http://heanet.dl.sourceforge.net/project/alfresco/Alfresco%20201609-EA%20Community/alfresco-community-installer-201609-EA-linux-x64.bin
+ENV ALF_URL=http://downloads.sourceforge.net/project/alfresco/Alfresco%20201611-EA%20Community/alfresco-community-installer-201611-EA-linux-x64.bin?r=https%3A%2F%2Fwww.google.ru%2F&ts=1480456480&use_mirror=netcologne
 ENV ALF_HOME=/opt/alfresco
-
 
 RUN mkdir -p /app/assets
 
@@ -41,6 +40,5 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 VOLUME ["${ALF_HOME}/alf_data"]
 
 EXPOSE 21 137 138 139 445 7070 8009 8080
-
 
 CMD /app/run.sh
