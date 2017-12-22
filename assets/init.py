@@ -205,6 +205,7 @@ class ServiceRun():
               raise KeyError("You must provide the search base user")
 
           self.replace_all(ALFRESCO_PATH + '/tomcat/shared/classes/alfresco-global.properties', 'authentication.chain\s*=.*', 'authentication.chain=alfrescoNtlm1:alfrescoNtlm,ldap1:ldap')
+          self.replace_all(ALFRESCO_PATH + '/tomcat/shared/classes/alfresco-global.properties', 'authentication.protection.enabled\s*=.*', 'authentication.protection.enabled=false')
           self.replace_all(ALFRESCO_PATH + '/tomcat/shared/classes/alfresco/extension/subsystems/Authentication/ldap/ldap1/ldap-authentication.properties', 'ldap.authentication.userNameFormat\s*=.*', 'ldap.authentication.userNameFormat=' + auth_format)
           self.replace_all(ALFRESCO_PATH + '/tomcat/shared/classes/alfresco/extension/subsystems/Authentication/ldap/ldap1/ldap-authentication.properties', 'ldap.authentication.java.naming.provider.url\s*=.*', 'ldap.authentication.java.naming.provider.url=ldap://' + host + ':389')
           self.replace_all(ALFRESCO_PATH + '/tomcat/shared/classes/alfresco/extension/subsystems/Authentication/ldap/ldap1/ldap-authentication.properties', 'ldap.authentication.defaultAdministratorUserNames\s*=.*', 'ldap.authentication.defaultAdministratorUserNames=' + list_admins)
